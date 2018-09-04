@@ -1,0 +1,13 @@
+{
+    "SCCMConfig": 
+    {
+        "SiteServer"    : "sccm01.biz.lodh.com",
+        "SiteName"      : "LO1",
+        "SCCMModulePath": "\\\\sccm01\\C$\\Program Files (x86)\\Microsoft Configuration Manager\\AdminConsole\\bin\\ConfigurationManager.psd1"
+    },
+    "Notification": 
+    {
+        "email"         : true
+    },
+    "debug": true
+}
