@@ -54,23 +54,24 @@ Function Add-DevicesToCollection{
         }
 
         $collection = Get-CMCollection -Name $collectionName
-        $members = (Get-CMCollectionMember -CollectionId $collection.CollectionID).Name
+        $members = (Get-CMCollectionMember -CollectionId $collection.CollectionID).Name.tolower()
+		$rules = (Get-CMDeviceCollectionDirectMembershipRule -CollectionId $collection.CollectionID).ruleName.tolower()
 
         foreach($vm in $vmList){
             $allDevice = Get-CMDevice -Name $vm -CollectionName "All Desktop and Server Clients"
             if($allDevice.count -eq 1){
-                if($members -notcontains $vm){
+                if($members -notcontains $vm.tolower() -and $rules -notcontains $vm.tolower()){
                     write-output "$(get-date -Format 'hh:mm, dd/MM/yyyy') - Need to add $vm"
                     $retry = 0
                     while($retry -le 10){
                         try{
-                            Add-CMDeviceCollectionDirectMembershipRule -CollectionId $collection.CollectionID -ResourceId  $allDevice.ResourceID
+							Add-CMDeviceCollectionDirectMembershipRule -CollectionId $collection.CollectionID -ResourceId  $allDevice.ResourceID
                             $retry = 99
                         }
                         catch{
-                            $retry += 1
-                            write-output "$(get-date -Format 'hh:mm, dd/MM/yyyy') - Error number : $retry retry in 30s"
-                            sleep 30
+							$retry += 1
+							write-output "$(get-date -Format 'hh:mm, dd/MM/yyyy') - Error number : $retry retry in 30s"
+							start-sleep 30
                         }
                     }
                 }
